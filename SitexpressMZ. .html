@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SiteExpressMz | Soluções Digitais Corporativas</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0B0B0B;
+      --surface: #111111;
+      --border: #222222;
+      --text: #FFFFFF;
+      --text-muted: #888888;
+      --accent: #0066FF;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { 
+      background: var(--bg); 
+      color: var(--text); 
+      font-family: 'Inter', sans-serif; 
+      font-size: 16px;
+      overflow-x: hidden;
+    }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; display: block; }
+    
+    /* HEADER */
+    header { 
+      position: fixed; 
+      width: 100%; 
+      top: 0; 
+      background: rgba(11,11,11,0.8); 
+      backdrop-filter: blur(12px); 
+      border-bottom: 1px solid var(--border); 
+      z-index: 100;
+    }
+    .nav { display: flex; justify-content: space-between; align-items: center; height: 72px; }
+    .logo { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; }
+    .logo span { color: var(--accent); }
+    
+    /* MENU BOTÃO - LADO DIREITO */
+    .menu-btn { 
+      background: none; 
+      border: 1px solid var(--border); 
+      width: 44px; 
+      height: 44px; 
+      border-radius: 6px; 
+      cursor: pointer;
+      position: relative;
+    }
+    .menu-btn span { 
+      display: block; 
+      width: 18px; 
+      height: 2px; 
+      background: var(--text); 
+      margin: 4px auto; 
+      transition: 0.3s;
+    }
+    
+    /* MENU LATERAL - ABRE DO LADO DO BOTÃO */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      right: -300px;
+      width: 300px;
+      height: 100vh;
+      background: var(--surface);
+      border-left: 1px solid var(--border);
+      padding: 100px 32px 32px;
+      transition: 0.4s ease;
+      z-index: 99;
+    }
+    .sidebar.active { right: 0; }
+    .sidebar a { 
+      display: block; 
+      padding: 14px 0; 
+      color: var(--text-muted); 
+      font-weight: 500;
+      border-bottom: 1px solid var(--border);
+    }
+    .sidebar a:hover, .sidebar a.active { color: var(--text); }
+    .overlay { 
+      position: fixed; 
+      top: 0; 
+      left: 0; 
+      width: 100%; 
+      height: 100%; 
+      background: rgba(0,0,0,0.6); 
+      opacity: 0; 
+      visibility: hidden; 
+      transition: 0.4s;
+      z-index: 98;
+    }
+    .overlay.active { opacity: 1; visibility: visible; }
+    
+    /* PÁGINAS */
+    .page { display: none; padding: 140px 0 80px; min-height: 100vh; }
+    .page.active { display: block; }
+    
+    /* HERO */
+    .hero-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 60px; align-items: center; }
+    h1 { font-size: 56px; font-weight: 700; line-height: 1.1; letter-spacing: -2px; margin-bottom: 24px; }
+    h1 span { color: var(--accent); }
+    .subtitle { font-size: 20px; color: var(--text-muted); max-width: 600px; margin-bottom: 40px; }
+    h2 { font-size: 40px; font-weight: 700; margin-bottom: 16px; letter-spacing: -1px; }
+    h3 { font-size: 24px; font-weight: 600; margin-bottom: 12px; }
+    
+    /* IMAGENS */
+    .hero-img { 
+      border-radius: 12px; 
+      border: 1px solid var(--border);
+      width: 100%;
+      height: 400px;
+      object-fit: cover;
+    }
+    .portfolio-img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      border: 1px solid var(--border);
+    }
+    
+    /* BOTÕES */
+    .btn {
+      display: inline-block;
+      padding: 14px 24px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 15px;
+      transition: 0.2s;
+    }
+    .btn-primary { background: var(--accent); color: #FFF; }
+    .btn-primary:hover { opacity: 0.9; }
+    .btn-ghost { 
+      background: transparent; 
+      color: var(--text); 
+      border: 1px solid var(--border); 
+      margin-left: 12px;
+    }
+    .btn-ghost:hover { background: var(--surface); }
+    
+    /* WHATSAPP DISCRETO */
+    .btn-whatsapp { 
+      background: var(--surface); 
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+    }
+    .btn-whatsapp:hover { color: var(--text); border-color: #333; }
+    
+    /* CARDS */
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; margin-top: 60px; }
+    .card { 
+      background: var(--surface); 
+      border: 1px solid var(--border); 
+      padding: 32px; 
+      border-radius: 12px; 
+    }
+    .card p { color: var(--text-muted); }
+
+    /* TABELA DE PREÇOS */
+    .pricing-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 60px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .pricing-table th, .pricing-table td {
+      padding: 20px 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    .pricing-table th {
+      background: #0F0F0F;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .pricing-table td {
+      color: var(--text-muted);
+      vertical-align: top;
+    }
+    .pricing-table tr:last-child td { border-bottom: none; }
+    .pricing-table .price-cell {
+      color: var(--accent);
+      font-size: 24px;
+      font-weight: 700;
+    }
+    .pricing-table .plan-name {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    /* PAGAMENTO */
+    .payment-methods {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+      flex-wrap: wrap;
+    }
+    .payment-badge {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+    
+    /* FOOTER */
+    footer { border-top: 1px solid var(--border); padding: 60px 0 40px; margin-top: 100px; }
+    .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px; }
+    .footer-links a { display: block; color: var(--text-muted); margin-bottom: 12px; }
+    .footer-links a:hover { color: var(--text); }
+    
+    @media(max-width:900px){
+      .hero-grid{grid-template-columns:1fr}
+      h1{font-size:36px} 
+      h2{font-size:32px}
+      .footer-grid{grid-template-columns:1fr}
+      .btn-ghost{margin-left:0; margin-top:12px}
+      .pricing-table { font-size: 14px; }
+      .pricing-table th, .pricing-table td { padding: 12px 8px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <div class="nav">
+        <div class="logo">SiteExpress<span>Mz</span></div>
+        <button class="menu-btn" onclick="toggleMenu()">
+          <span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="overlay" onclick="toggleMenu()"></div>
+  <nav class="sidebar" id="sidebar">
+    <a href="#home" onclick="showPage('home')" class="active">Início</a>
+    <a href="#sobre" onclick="showPage('sobre')">Sobre Nós</a>
+    <a href="#servicos" onclick="showPage('servicos')">Serviços</a>
+    <a href="#portfolio" onclick="showPage('portfolio')">Portfólio</a>
+    <a href="#precos" onclick="showPage('precos')">Preços</a>
+    <a href="#contacto" onclick="showPage('contacto')">Contacto</a>
+    <a href="#termos" onclick="showPage('termos')">Termos de Uso</a>
+  </nav>
+
+  <main>
+    <!-- PÁGINA 1: HOME -->
+    <section id="home" class="page active">
+      <div class="container">
+        <div class="hero-grid">
+          <div>
+            <h1>Infraestrutura Digital <span>para Empresas que Lideram</span></h1>
+            <p class="subtitle">Desenvolvemos ativos digitais de alta performance. Entrega em 24h com arquitetura escalável e suporte corporativo.</p>
+            <a href="https://wa.me/258860760028?text=Olá,%20vim%20do%20site%20SiteExpressMz" class="btn btn-whatsapp">Falar no WhatsApp</a>
+            <a href="#precos" onclick="showPage('precos')" class="btn btn-ghost">Ver Planos</a>
+          </div>
+          <div>
+            <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2070" alt="Dashboard corporativo" class="hero-img">
+          </div>
+        </div>
+        
+        <div class="grid">
+          <div class="card"><h3>Entrega 24h</h3><p>SLA garantido em contrato. Seu site no ar em 1 dia útil.</p></div>
+          <div class="card"><h3>Alta Performance</h3><p>Nota 90+ no Google PageSpeed. Carrega em menos de 1s.</p></div>
+          <div class="card"><h3>Suporte Dedicado</h3><p>Canal direto com desenvolvedor. Sem call center.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PÁGINA 2: SOBRE -->
+    <section id="sobre" class="page">
+      <div class="container">
+        <h2>Sobre a SiteExpressMz</h2>
+        <p class="subtitle">Somos uma consultoria de tecnologia focada em PMEs moçambicanas. Fundada em Marrupa, com operação 100% digital para todo o país.</p>
+        <div class="grid">
+          <div class="card">
+            <h3>Missão</h3>
+            <p>Eliminar a barreira técnica para que empresas locais compitam a nível global através de presença digital profissional.</p>
+          </div>
+          <div class="card">
+            <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=2070" alt="Equipe" style="border-radius:8px; margin-bottom:16px; border:1px solid var(--border)">
+            <h3>Operação Remota</h3>
+            <p>Base em Marrupa. Atendimento 100% online para todo Moçambique.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PÁGINA 3: SERVIÇOS -->
+    <section id="servicos" class="page">
+      <div class="container">
+        <h2>Serviços</h2>
+        <div class="grid">
+          <div class="card">
+            <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2015" alt="Site institucional" class="portfolio-img">
+            <h3>Site Institucional</h3>
+            <p>5 páginas, otimizado para SEO, integração WhatsApp e domínio .com incluso.</p>
+          </div>
+          <div class="card">
+            <img src="https://images.unsplash.com/photo-1556155092-490a1ba16284?q=80&w=2070" alt="Landing page" class="portfolio-img">
+            <h3>Landing Page</h3>
+            <p>Foco em conversão para campanhas. Testes A/B e pixel de rastreamento.</p>
+          </div>
+          <div class="card">
+            <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?q=80&w=2070" alt="E-commerce" class="portfolio-img">
+            <h3>E-commerce</h3>
+            <p>Loja virtual com pagamento M-Pesa, E-mola ou Binance. Gestão de stock.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PÁGINA 4: PORTFÓLIO -->
+    <section id="portfolio" class="page">
+      <div class="container">
+        <h2>Portfólio</h2>
+        <p class="subtitle">Projetos entregues para clientes em Marrupa, Nampula, Maputo e Beira.</p>
+        <div class="grid">
+          <div class="card">
+            <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=2070" alt="Restaurante" class="portfolio-img">
+            <h3>Restaurante Zambeze</h3>
+            <p>Cardápio digital + sistema de pedidos via WhatsApp. +40% em vendas.</p>
+          </div>
+          <div class="card">
+            <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?q=80&w=2070" alt="Clínica" class="portfolio-img">
+            <h3>Clínica Bem-Estar</h3>
+            <p>Agendamento online integrado. Redução de 70% em faltas.</p>
+          </div>
+          <div class="card">
+            <img src="https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?q=80&w=2032" alt="Auto Peças" class="portfolio-img">
+            <h3>AutoPeças Express</h3>
+            <p>Catálogo com 2.000 itens. Pedido direto no WhatsApp.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PÁGINA 5: PREÇOS -->
+    <section id="precos" class="page">
+      <div class="container">
+        <h2>Planos e Preços</h2>
+        <p class="subtitle">Preço único. Sem mensalidade. Pagamento 50% entrada via M-Pesa, E-mola ou Binance.</p>
+        
+        <div class="payment-methods">
+          <div class="payment-badge">M-Pesa</div>
+          <div class="payment-badge">E-mola</div>
+          <div class="payment-badge">Binance USDT</div>
+        </div>
+        
+        <table class="pricing-table">
+          <thead>
+            <tr>
+              <th>Plano</th>
+              <th>Preço</th>
+              <th>Inclui</th>
+              <th>Pra Quem</th>
+              <th>Prazo</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="plan-name">START</td>
+              <td class="price-cell">€35</td>
+              <td>5 páginas, Domínio .com 1 ano, Hospedagem 1 ano, SSL, Botão WhatsApp, Design mobile, Suporte 30 dias</td>
+              <td>Restaurante, barbearia, técnico, loja pequena</td>
+              <td>24h</td>
+            </tr>
+            <tr>
+              <td class="plan-name">PRO</td>
+              <td class="price-cell">€75</td>
+              <td>Tudo do START + Blog, Formulário avançado, Galeria 20 fotos, Pixel Facebook, Google Maps, Suporte 60 dias</td>
+              <td>Clínica, escritório, igreja, empresa média</td>
+              <td>48h</td>
+            </tr>
+            <tr>
+              <td class="plan-name">E-COMMERCE</td>
+              <td class="price-cell">€150</td>
+              <td>Tudo do PRO + Loja 50 produtos, Pagamento M-Pesa/E-mola/Binance, Gestão de stock, Painel admin, Suporte 90 dias</td>
+              <td>Loja de roupa, autopeças, farmácia</td>
+              <td>5 dias</td>
+            </tr>
+            <tr>
+              <td class="plan-name">CORPORATE</td>
+              <td class="price-cell">€300</td>
+              <td>Tudo do E-COMMERCE + Produtos ilimitados, Área cliente, Integração API, Multilíngue, Suporte 6 meses</td>
+              <td>Empresa grande, distribuidora, franquia</td>
+              <td>10 dias</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div style="margin-top:40px;">
+          <p style="color:var(--text-muted); margin-bottom:16px;"><strong>Extras:</strong> Domínio .co.mz +€15/ano | Página adicional €10 | Logo simples €15 | Manutenção €20/mês</p>
+          <a href="https://wa.me/258860760028?text=Quero%20fechar%20o%20Plano%20START%20€35" class="btn btn-primary">Contratar Plano START</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- PÁGINA 6: CONTACTO -->
+    <section id="contacto" class="page">
+      <div class="container">
+        <h2>Contacto</h2>
+        <p class="subtitle">Resposta em horário comercial. Atendimento via WhatsApp prioritário.</p>
+        <div class="grid">
+          <div class="card">
+            <h3>WhatsApp Business</h3>
+            <p>+258 860 760 028</p>
+            <br>
+            <a href="https://wa.me/258860760028" class="btn btn-whatsapp">Iniciar Conversa</a>
+          </div>
+          <div class="card">
+            <h3>Email Corporativo</h3>
+            <p>juma.mustafa258@gmail.com</p>
+            <br>
+            <a href="mailto:jumamustafa258@gmail.com" class="btn btn-ghost">Enviar Email</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PÁGINA 7: TERMOS ATUALIZADOS -->
+    <section id="termos" class="page">
+      <div class="container">
+        <h2>Termos e Condições de Uso</h2>
+        <p class="subtitle">Última atualização: 26 de Abril de 2026</p>
+        
+        <div class="card" style="line-height: 1.8;">
+          <h3>1. SERVIÇO E PAGAMENTO</h3>
+          <p>1.1. O serviço consiste na criação de website conforme plano escolhido.<br>
+          1.2. Pagamento: 50% no ato da contratação via M-Pesa, E-mola ou Binance USDT para iniciar. 50% restantes na entrega.<br>
+          1.3. Atraso no pagamento final superior a 5 dias implica suspensão do site.<br>
+          1.4. Valores não incluem domínio.co.mz. Opcional +€15/ano.</p>
+          
+          <br><h3>2. PRAZOS E ENTREGAS</h3>
+          <p>2.1. O prazo conta após pagamento da entrada E envio de todos materiais pelo cliente.<br>
+          2.2. Atraso no envio de material pelo cliente pausa o prazo automaticamente.<br>
+          2.3. START: 24h úteis. PRO: 48h. E-COMMERCE: 5 dias. CORPORATE: 10 dias.</p>
+
+          <br><h3>3. REVISÕES</h3>
+          <p>3.1. Inclusas 2 rodadas de revisões. Revisão = lista de ajustes enviada de uma vez.<br>
+          3.2. Revisões adicionais: €10 por rodada.<br>
+          3.3. Alterações de escopo serão orçadas à parte.</p>
+
+          <br><h3>4. HOSPEDAGEM E SUPORTE</h3>
+          <p>4.1. Hospedagem e domínio.com grátis no primeiro ano. Renovação: €20/ano.<br>
+          4.2. Suporte: 30 dias START, 60 dias PRO, 90 dias E-COMMERCE, 6 meses CORPORATE.<br>
+          4.3. Não nos responsabilizamos por instabilidades do servidor terceiro.</p>
+
+          <br><h3>5. CANCELAMENTO</h3>
+          <p>5.1. Valor da entrada não é reembolsável.<br>
+          5.2. Cancelamento após entrega = pagamento de 100% do serviço.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <div class="logo">SiteExpress<span>Mz</span></div>
+          <p style="color:var(--text-muted); margin-top:16px;">Soluções Digitais Corporativas<br>Base: Marrupa, Moçambique</p>
+        </div>
+        <div class="footer-links">
+          <h3>Empresa</h3>
+          <a href="#sobre" onclick="showPage('sobre')">Sobre</a>
+          <a href="#precos" onclick="showPage('precos')">Preços</a>
+          <a href="#contacto" onclick="showPage('contacto')">Contacto</a>
+        </div>
+        <div class="footer-links">
+          <h3>Legal</h3>
+          <a href="#termos" onclick="showPage('termos')">Termos de Uso</a>
+          <a href="https://www.facebook.com/profile.php?id=100092667367148" target="_blank">Facebook</a>
+          <a href="mailto:jumamustafa258@gmail.com">Email</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    function toggleMenu() {
+      document.getElementById('sidebar').classList.toggle('active');
+      document.querySelector('.overlay').classList.toggle('active');
+    }
+    
+    function showPage(pageId) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById(pageId).classList.add('active');
+      document.querySelectorAll('.sidebar a').forEach(a => a.classList.remove('active'));
+      document.querySelector(`.sidebar a[href="#${pageId}"]`).classList.add('active');
+      toggleMenu();
+      window.scrollTo(0,0);
+    }
+  </script>
+</body>
+</html>
